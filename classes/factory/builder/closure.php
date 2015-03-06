@@ -30,6 +30,10 @@ class closure implements factory\builder
 
 					foreach ($constructor->getParameters() as $position => $parameter)
 					{
+                        if ($parameter->getName() === 'context') {
+                            continue;
+                        }
+
 						$closureParameters[$position] = ($parameter->isPassedByReference() === false ? '' : '& ') . $constructorParameters[$position] = '$' . $parameter->getName();
 
 						if (self::isVariadic($parameter))
@@ -52,6 +56,10 @@ class closure implements factory\builder
 								$defaultValue = null;
 						}
 
+                        if ($parameter->getName() === 'open_mode') {
+							$closureParameters[$position] .= ' = "r"';
+                            continue;
+                        }
 						if ($defaultValue !== null)
 						{
 							$closureParameters[$position] .= ' = ' . $defaultValue;

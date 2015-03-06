@@ -147,6 +147,24 @@ class closure extends atoum
 		;
 	}
 
+	public function testBuildForClassExtendesSplFileObjectWhichNotContainsDefaultValue()
+	{
+		eval('namespace ' . __NAMESPACE__ . ' { class classExtendsSplFileObject extends \SplFileObject
+		{
+		} }');
+	
+		$reference = realpath(__FILE__);
+
+		$this
+			->object(
+				$this->newTestedInstance->build(
+					new \reflectionClass(__NAMESPACE__ . '\classExtendsSplFileObject'), $instance)
+				)->isTestedInstance
+				->object($factory = $this->testedInstance->get())->isInstanceOf('\closure')
+				->object($builtInstance = $factory($reference))->isInstanceOf(__NAMESPACE__ . '\classExtendsSplFileObject')
+				;
+	}
+
 	/**
 	 * @php >= 5.6
 	 */
