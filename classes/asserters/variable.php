@@ -46,6 +46,35 @@ class variable extends atoum\asserter
 		}
 	}
 
+	public function __call($method, $arguments)
+	{
+		$assertion = null;
+
+		switch ($method)
+		{
+			case '==':
+				$assertion = 'isEqualTo';
+				break;
+
+			case '===':
+				$assertion = 'isIdenticalTo';
+				break;
+
+			case '!=':
+				$assertion = 'isNotEqualTo';
+				break;
+
+			case '!==':
+				$assertion = 'isNotIdenticalTo';
+				break;
+
+			default:
+				return parent::__call($method, $arguments);
+		}
+
+		return call_user_func_array(array($this, $assertion), $arguments);
+	}
+
 	public function setDiff(diffs\variable $diff = null)
 	{
 		$this->diff = $diff ?: new diffs\variable();
@@ -112,7 +141,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail(($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value))) .  PHP_EOL .  $this->diff($value));
+			$this->fail(($failMessage ?: $this->_('%s is not equal to %s', $this, $this->getTypeOf($value))) . PHP_EOL . $this->diff($value));
 		}
 
 		return $this;
@@ -140,7 +169,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage ?: $this->_('%s is not identical to %s', $this, $this->getTypeOf($value)) .  PHP_EOL .  $this->diff($value));
+			$this->fail($failMessage ?: $this->_('%s is not identical to %s', $this, $this->getTypeOf($value)) . PHP_EOL . $this->diff($value));
 		}
 
 		return $this;
